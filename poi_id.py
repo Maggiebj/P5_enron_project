@@ -56,25 +56,9 @@ def nullpercentage(key):
    print 'the feature {} has null value percentage is {}'.format(key,percentage) 
    
    return None
-nullpercentage('salary') 
-nullpercentage('deferral_payments')
-nullpercentage('total_payments')
-nullpercentage('loan_advances')
-nullpercentage('bonus')
-nullpercentage('restricted_stock_deferred')
-nullpercentage('deferred_income')
-nullpercentage('total_stock_value')
-nullpercentage('expenses')
-nullpercentage('exercised_stock_options')
-nullpercentage('other')
-nullpercentage('long_term_incentive')
-nullpercentage('restricted_stock')
-nullpercentage('director_fees')
-nullpercentage('to_messages')
-nullpercentage('from_poi_to_this_person')
-nullpercentage('from_messages')
-nullpercentage('from_this_person_to_poi')
-nullpercentage('shared_receipt_with_poi')
+for i in allfeatures:
+	nullpercentage(i) 
+
 
 
 
@@ -119,14 +103,14 @@ data_dict_1 = df_1.to_dict('index')
 my_dataset = data_dict_1
 
 ### Extract features and labels from dataset for local testing	
-print "CHECKING FOR SELF IMPLEMENTED FEATURES......"
+print "CHECKING FOR SELF IMPLEMENTED FEATURES WITH TUNED......"
 features_list_1=["poi","rate of poi/to","rate of poi/from"]
 data = featureFormat(my_dataset, features_list_1, remove_NaN=True, remove_all_zeroes=True, sort_keys = True)
 labels, features = targetFeatureSplit(data) #len(labels),len(features):143,143
 
 print "after extract features and labels,with remove_all_zeroes=True, the number of row is:",len(labels)
 print "the number of poi is",sum(labels)
-from sklearn.cross_validation import StratifiedShuffleSplit
+
 from sklearn.tree import DecisionTreeClassifier
 ##parameter tuned for decisiontree when testing 2 self-implemented features
 from sklearn.cross_validation import StratifiedShuffleSplit
@@ -219,7 +203,6 @@ test_classifier(clf_dt,my_dataset,testfeatureswithpoi)
 print "USING SVC TRAINING "
 
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.feature_selection import RFECV
 from sklearn.svm import SVC
@@ -232,10 +215,10 @@ print "svc with all features after scaled:"
 test_classifier(pipe,my_dataset,features_list_2)
 
 
-#svc features selection with RFECV
+#from sklearn.feature_selection import RFECV
 #scaler=MinMaxScaler()
 #features_scaled=scaler.fit_transform(features)
-#svc_clf=SVC()
+#svc_clf=SVC()#only kernal= "linear" has coef_
 #svc_fs = RFECV(svc_clf,cv=5,scoring="recall")
 #svc_fs=svc_fs.fit(features_scaled,labels)
 #print "RFECV features selection:{}{}",format(features_list[1:],svc_fs.support_)
@@ -247,7 +230,6 @@ test_classifier(pipe,my_dataset,features_list_2)
 #print "feature_selected_tuple by selectkbest",feature_selected_tuple
 
 #features_list2=["poi","bonus","salary","rate of poi/from","total_stock_value","shared_receipt_with_poi","exercised_stock_options","total_payments","restricted_stock"]
-
 #from sklearn.decomposition import PCA
 #pca=PCA(n_components=2)
 #pca.fit(features_train)
@@ -268,7 +250,7 @@ test_classifier(pipe,my_dataset,features_list_2)
 #a_grid_search.fit(features,labels)
 #best_clf=a_grid_search.best_estimator_
 #print "svc  best estimator",best_clf
-#clf=SVC(C=100000.0, cache_size=200, class_weight=None, coef0=0.0,decision_function_shape=None, degree=3, gamma="auto", kernel='rbf',max_iter=-1, probability=False, random_state=None, shrinking=True,tol=0.1, verbose=False)
+
 
 
 
@@ -278,21 +260,26 @@ test_classifier(pipe,my_dataset,features_list_2)
 print "USING ADABOOST TRAINING..."
 
 from sklearn.ensemble import AdaBoostClassifier
-clf_ada_all=AdaBoostClassifier(n_estimators=50,random_state=42)
+clf_ada=AdaBoostClassifier(n_estimators=50,random_state=42)
 print "adaboost with all features"
-#test_classifier(clf_ada_all,my_dataset,features_list_2)
-
-clf_ada=AdaBoostClassifier(n_estimators=50)
-from sklearn.grid_search import GridSearchCV
-parameters={"random_state":[24,42,60],"learning_rate":[1.0,2.0,3.0]}
-cv=StratifiedShuffleSplit(labels,10,test_size=0.1,random_state=42)
-a_grid_search=GridSearchCV(estimator=clf_ada,param_grid=parameters,cv=cv,scoring='recall')
-grid_search_result=a_grid_search.fit(features,labels)
-clf=grid_search_result.best_estimator_
+test_classifier(clf_ada,my_dataset,features_list_2)
 
 print "adaboost with selected features"
 print "features list selected:",testfeatureswithpoi
+test_classifier(clf_ada,my_dataset,testfeatureswithpoi)
+
+clf_ada_t=AdaBoostClassifier(n_estimators=50)
+from sklearn.grid_search import GridSearchCV
+parameters={"random_state":[24,42,60],"learning_rate":[1.0,2.0,3.0]}
+cv=StratifiedShuffleSplit(labels,100,test_size=0.1,random_state=42)
+a_grid_search=GridSearchCV(estimator=clf_ada_t,param_grid=parameters)
+grid_search_result=a_grid_search.fit(features,labels)
+clf=grid_search_result.best_estimator_
+
+print "final adaboost with selected features and tuned"
+print "features list selected:",testfeatureswithpoi
 test_classifier(clf,my_dataset,testfeatureswithpoi)
+
 #test_classifier(clf_ada_all,my_dataset,testfeatureswithpoi)
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project

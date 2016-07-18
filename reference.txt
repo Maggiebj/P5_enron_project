@@ -1,6 +1,0 @@
-Reference:
-Data Leakage
-https://www.kaggle.com/wiki/Leakage
-https://discussions.udacity.com/t/mistake-in-the-way-email-poi-features-are-engineered-in-the-course/4841/6
-Cross Validation
-http://scikit-learn.org/stable/modules/cross_validation.html
