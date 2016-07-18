@@ -1,0 +1,82 @@
+CHECKING FOR SELF IMPLEMENTED FEATURES WITH TUNED......
+after extract features and labels,with remove_all_zeroes=True, the number of row
+ is: 77
+the number of poi is 14.0
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=None,
+            max_features=None, max_leaf_nodes=None, min_samples_leaf=2,
+            min_samples_split=2, min_weight_fraction_leaf=0.0,
+            presort=False, random_state=46, splitter='best')
+        Accuracy: 0.83200       Precision: 0.34420      Recall: 0.38000 F1: 0.36
+122     F2: 0.37226
+        Total predictions: 8000 True positives:  380    False positives:  724
+False negatives:  620   True negatives: 6276
+
+USING DECISIONTREE TRAINING......
+Feature Ranking:
+feature no. 1: exercised_stock_options (0.226)
+feature no. 2: bonus (0.204814821291)
+feature no. 3: expenses (0.196718108447)
+feature no. 4: restricted_stock (0.166396367595)
+feature no. 5: from_messages (0.124659028057)
+feature no. 6: total_payments (0.0457368958475)
+feature no. 7: to_messages (0.0356747787611)
+feature no. 8: other (0.0)
+feature no. 9: total_stock_value (0.0)
+feature no. 10: salary (0.0)
+decisiontree with all features
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=None,
+            max_features=None, max_leaf_nodes=None, min_samples_leaf=1,
+            min_samples_split=2, min_weight_fraction_leaf=0.0,
+            presort=False, random_state=42, splitter='best')
+        Accuracy: 0.80887       Precision: 0.26504      Recall: 0.24450 F1: 0.25
+436     F2: 0.24835
+        Total predictions: 15000        True positives:  489    False positives:
+ 1356   False negatives: 1511   True negatives: 11644
+
+decisiontree with selected features
+features list selected: ['poi', 'exercised_stock_options', 'bonus', 'expenses']
+DecisionTreeClassifier(class_weight=None, criterion='gini', max_depth=None,
+            max_features=None, max_leaf_nodes=None, min_samples_leaf=1,
+            min_samples_split=2, min_weight_fraction_leaf=0.0,
+            presort=False, random_state=42, splitter='best')
+        Accuracy: 0.83064       Precision: 0.40982      Recall: 0.42150 F1: 0.41
+558     F2: 0.41911
+        Total predictions: 14000        True positives:  843    False positives:
+ 1214   False negatives: 1157   True negatives: 10786
+
+USING SVC TRAINING
+svc with all features after scaled:
+Got a divide by zero when trying out: Pipeline(steps=[('scaling', MinMaxScaler(c
+opy=True, feature_range=(0, 1))), ('classifier', SVC(C=1.0, cache_size=200, clas
+s_weight=None, coef0=0.0,
+  decision_function_shape=None, degree=3, gamma='auto', kernel='rbf',
+  max_iter=-1, probability=False, random_state=None, shrinking=True,
+  tol=0.001, verbose=False))])
+Precision or recall may be undefined due to a lack of true positive predicitons.
+
+USING ADABOOST TRAINING...
+adaboost with all features
+AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          learning_rate=1.0, n_estimators=50, random_state=42)
+        Accuracy: 0.84273       Precision: 0.38152      Recall: 0.28900 F1: 0.32
+888     F2: 0.30373
+        Total predictions: 15000        True positives:  578    False positives:
+  937   False negatives: 1422   True negatives: 12063
+
+adaboost with selected features
+features list selected: ['poi', 'exercised_stock_options', 'bonus', 'expenses']
+AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          learning_rate=1.0, n_estimators=50, random_state=42)
+        Accuracy: 0.86214       Precision: 0.51898      Recall: 0.47850 F1: 0.49
+792     F2: 0.48608
+        Total predictions: 14000        True positives:  957    False positives:
+  887   False negatives: 1043   True negatives: 11113
+
+final adaboost with selected features and tuned
+features list selected: ['poi', 'exercised_stock_options', 'bonus', 'expenses']
+AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None,
+          learning_rate=1.0, n_estimators=50, random_state=24)
+        Accuracy: 0.86236       Precision: 0.51983      Recall: 0.47850 F1: 0.49
+831     F2: 0.48623
+        Total predictions: 14000        True positives:  957    False positives:
+  884   False negatives: 1043   True negatives: 11116
